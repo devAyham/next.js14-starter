@@ -1,3 +1,4 @@
 export * from "./httpMethods";
 export * from "./httpStatusCodes";
-export * from "./servicesName";
+export * from "./httpServicesName";
+export * from "./socketNameSpaces";

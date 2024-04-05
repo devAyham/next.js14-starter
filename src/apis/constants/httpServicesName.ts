@@ -1,5 +1,5 @@
 // Define an enum with the possible service types
-export enum ServiceType {
+export enum HttpServiceType {
   Auth = "auth",
 }
 
@@ -10,6 +10,6 @@ const ServicesName = ["AuthService"] as const;
 type ServicesName = (typeof ServicesName)[number]; // type ServicesName = "CitiesService"|"RegionsService"
 
 // Define an object that maps each service name to its corresponding type
-export const ServicesTypes: Record<ServicesName, ServiceType> = {
-  AuthService: ServiceType.Auth,
+export const HttpServicesTypes: Record<ServicesName, HttpServiceType> = {
+  AuthService: HttpServiceType.Auth,
 } as const;
