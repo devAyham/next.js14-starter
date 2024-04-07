@@ -86,9 +86,11 @@ export default function useHttpCRUD<
             }
           );
       },
-      // onError: (error: ErrorResponse) => {
-      //   getAllConfig?.onError && getAllConfig.onError(error);
-      // },
+      onError: getAllConfig?.onError
+        ? (error: ErrorResponse) => {
+            getAllConfig?.onError && getAllConfig.onError(error);
+          }
+        : undefined,
     }
   );
 
@@ -125,9 +127,12 @@ export default function useHttpCRUD<
             }
           );
       },
-      // onError: (error: ErrorResponse) => {
-      //   getDetailsConfig?.onError && getDetailsConfig.onError(error, {}, {});
-      // },
+      onError: getDetailsConfig?.onError
+        ? (error: ErrorResponse) => {
+            getDetailsConfig?.onError &&
+              getDetailsConfig.onError(error, {}, {});
+          }
+        : undefined,
     }
   );
 
@@ -142,11 +147,14 @@ export default function useHttpCRUD<
       // !createConfig?.withOutFeedBackMessage &&
       //   handleSuccess(data, data.message);
     },
-    // onError: (error, variables, context) => {
-    //   createConfig?.onError && createConfig.onError(error, variables, context);
-    //   !createConfig?.withOutFeedBackMessage && handleError(error);
-    //   createEntity.reset();
-    // },
+    onError: createConfig?.onError
+      ? (error, variables, context) => {
+          createConfig?.onError &&
+            createConfig.onError(error, variables, context);
+          // !createConfig?.withOutFeedBackMessage && handleError(error);
+          createEntity.reset();
+        }
+      : undefined,
     onMutate: (data) => {
       return data;
     },
@@ -163,9 +171,12 @@ export default function useHttpCRUD<
       // !updateConfig?.withOutFeedBackMessage &&
       //   handleSuccess(data, data.message);
     },
-    onError: (error, variables, context) => {
-      updateConfig?.onError && updateConfig.onError(error, variables, context);
-    },
+    onError: updateConfig?.onError
+      ? (error, variables, context) => {
+          updateConfig?.onError &&
+            updateConfig.onError(error, variables, context);
+        }
+      : undefined,
     onMutate: (data: any) => {
       return data;
     },
@@ -180,10 +191,13 @@ export default function useHttpCRUD<
       queryClient.invalidateQueries([serviceName]);
       // !patchConfig?.withOutFeedBackMessage && handleSuccess(data, data.message);
     },
-    // onError: (error, variables, context) => {
-    // !patchConfig?.withOutFeedBackMessage && handleError(error);
-    //   patchConfig?.onError && patchConfig.onError(error, variables, context);
-    // },
+    onError: patchConfig?.onError
+      ? (error, variables, context) => {
+          // !patchConfig?.withOutFeedBackMessage && handleError(error);
+          patchConfig?.onError &&
+            patchConfig.onError(error, variables, context);
+        }
+      : undefined,
     onMutate: (data: any) => {
       return data;
     },
@@ -200,13 +214,13 @@ export default function useHttpCRUD<
       // !deleteConfig?.withOutFeedBackMessage &&
       //   handleSuccess(data, data.message);
     },
-    // onError: (error, variables, context) => {
-    //   const contextCallback = context as any;
-    //   contextCallback();
-
-    //   deleteConfig?.onError && deleteConfig.onError(error, variables, context);
-    //   !deleteConfig?.withOutFeedBackMessage && handleError(error);
-    // },
+    onError: deleteConfig?.onError
+      ? (error, variables, context) => {
+          deleteConfig?.onError &&
+            deleteConfig.onError(error, variables, context);
+          // !deleteConfig?.withOutFeedBackMessage && handleError(error);
+        }
+      : undefined,
     onMutate: ({ id }) => {
       // Optimistically update the cache
       const oldData: any = queryClient.getQueryData(

@@ -49,7 +49,7 @@ export interface IApiCrudConfig<
       extra?: unknown
     ) => void;
     // Optional callback function to execute on error in getDetails request
-    // onError?: (error: ErrorResponse, params: unknown, meta: unknown) => void;
+    onError?: (error: ErrorResponse, params: unknown, meta: unknown) => void;
     // Optional flag to disable feedback messages on error
     withOutFeedBackMessage?: boolean;
   } & {

@@ -10,9 +10,6 @@ export default class ApiProvider {
 
   public async request<T>(config: AxiosRequestConfig): Promise<T> {
     try {
-      config.headers = {
-        ...(config.headers),
-      };
       const response: AxiosResponse<T> = await this.axiosInstance.request(
         config
       );
