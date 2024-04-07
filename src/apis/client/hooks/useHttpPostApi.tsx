@@ -1,24 +1,24 @@
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { useMutation, useQueryClient } from "react-query";
-import { HttpServiceType } from "../constants";
+import { HttpServiceType } from "../../constants";
 import { IApiCrudConfig, ICustomEndpoints } from "../interfaces";
-import { CRUDService } from "../utils";
+import { CRUDService } from "../../utils";
 import { useHandleResponse } from "@/hooks";
 
-export default function useHttpCRUD<patchRequest = {}>(
+export default function useHttpPostApi<createRequest = {}>(
   serviceName: HttpServiceType,
-  options?: IApiCrudConfig<{}, {}, {}, patchRequest, {}, {}>,
+  options?: IApiCrudConfig<{}, createRequest, {}, {}, {}, {}>,
   customEndPoint?: ICustomEndpoints
 ) {
   //Options
-  const { patchConfig } = options ?? {};
+  const { createConfig } = options ?? {};
 
   const queryClient = useQueryClient();
 
   const { token } = useAppSelector((state) => state.auth);
   const { handleError, handleSuccess } = useHandleResponse();
 
-  const { patchItem } = new CRUDService<{}, {}, {}, patchRequest, {}, {}>(
+  const { create } = new CRUDService<{}, createRequest, {}, {}, {}, {}>(
     serviceName,
     customEndPoint,
     {
@@ -26,29 +26,31 @@ export default function useHttpCRUD<patchRequest = {}>(
     }
   );
 
-  const patchEntity = useMutation(patchItem, {
-    ...patchConfig,
+  const createEntity = useMutation(create, {
+    ...createConfig,
     onSuccess: (data, variables, context) => {
-      patchConfig?.onSuccess && patchConfig.onSuccess(data, variables, context);
       // Invalidate and refetch
       queryClient.invalidateQueries([serviceName]);
-      !patchConfig?.withOutFeedBackMessage && handleSuccess(data, data.message);
+      createConfig?.onSuccess &&
+        createConfig.onSuccess(data, variables, context);
+      !createConfig?.withOutFeedBackMessage &&
+        handleSuccess(data, data.message);
     },
-    onError: patchConfig?.onError
+    onError: createConfig?.onError
       ? (error, variables, context) => {
-          patchConfig?.onError &&
-            patchConfig.onError(error, variables, context);
-
+          createConfig?.onError &&
+            createConfig.onError(error, variables, context);
+          createEntity.reset();
           console.error("error from hook", error);
           handleError(error);
         }
       : undefined,
-    onMutate: (data: any) => {
+    onMutate: (data) => {
       return data;
     },
   });
 
   return {
-    patchEntity,
+    createEntity,
   };
 }

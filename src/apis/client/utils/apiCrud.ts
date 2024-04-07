@@ -1,11 +1,11 @@
 import { AxiosRequestConfig } from "axios";
 import ApiService from "./apiService";
-import { ICustomEndpoints } from "../interfaces/CustomEndPoints.interface";
-import { IRequestParams } from "../interfaces/RequestParams.interface";
-import { httpMethodsDefaultSuffix } from "../constants/httpMethodsDefaultSuffix";
-import { addHeaders } from "../helpers/addHeaders";
+import { ICustomEndpoints } from "../client/interfaces/CustomEndPoints.interface";
+import { IRequestParams } from "../client/interfaces/RequestParams.interface";
+import { httpMethodsDefaultSuffix } from "../client/constants/httpMethodsDefaultSuffix";
+import { addHeaders } from "../client/helpers/addHeaders";
 import { EntityIdType } from "@/types/EntityId.type";
-import { ICrudResponse } from "../interfaces/CrudResponse.interface";
+import { ICrudResponse } from "../client/interfaces/CrudResponse.interface";
 
 export class CRUDService<
   requestParams,

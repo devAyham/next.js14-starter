@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { useQuery } from "react-query";
-import { HttpServiceType } from "../constants";
+import { HttpServiceType } from "../../constants";
 import { generateEntityQueryKey } from "../helpers/queryKeysFactory";
 import {
   ErrorResponse,
@@ -8,7 +8,7 @@ import {
   ICrudResponse,
   ICustomEndpoints,
 } from "../interfaces";
-import { CRUDService } from "../utils";
+import { CRUDService } from "../../utils";
 import { useHandleResponse } from "@/hooks";
 
 export default function useHttpCRUD<requestParams = {}, getResponse = {}>(

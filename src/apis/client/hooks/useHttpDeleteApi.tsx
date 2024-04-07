@@ -3,7 +3,7 @@ import {
   generateEntityCollectionQueryKey,
   generateEntityQueryKey,
 } from "../helpers/queryKeysFactory";
-import { HttpServiceType } from "../constants";
+import { HttpServiceType } from "../../constants";
 import {
   ErrorResponse,
   IApiCrudConfig,
@@ -12,7 +12,7 @@ import {
   ICustomEndpoints,
 } from "../interfaces";
 import { useAppSelector } from "@/hooks/useReduxHooks";
-import { CRUDService } from "../utils";
+import { CRUDService } from "../../utils";
 import { useHandleResponse } from "@/hooks";
 
 export default function useHttpCRUD<

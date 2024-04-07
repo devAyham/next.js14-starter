@@ -1,4 +1,4 @@
-import { HttpServiceType } from "../constants/httpServicesName";
+import { HttpServiceType } from "../../constants/httpServicesName";
 
 export const generateEntityQueryKey = ({
   entityType,

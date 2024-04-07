@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import RequestConfig from "../interfaces/RequestConfig.interface";
+import RequestConfig from "../client/interfaces/RequestConfig.interface";
 
 export default class ApiProvider {
   private readonly axiosInstance: AxiosInstance;
