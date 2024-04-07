@@ -1,4 +1,4 @@
-import { ICustomEndpoints } from "../interfaces/CustomEndPoints.interface";
+import { ICustomEndpoints } from "../client/interfaces/CustomEndPoints.interface";
 
 export const httpMethodsDefaultSuffix: Required<ICustomEndpoints> = {
   deleteEndpoint: "",

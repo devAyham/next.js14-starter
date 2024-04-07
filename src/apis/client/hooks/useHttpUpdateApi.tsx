@@ -1,24 +1,23 @@
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { useMutation, useQueryClient } from "react-query";
-import { HttpServiceType } from "../constants";
+import { HttpServiceType } from "../../constants";
 import { IApiCrudConfig, ICustomEndpoints } from "../interfaces";
-import { CRUDService } from "../utils";
+import { CRUDService } from "../../utils";
 import { useHandleResponse } from "@/hooks";
 
-export default function useHttpPostApi<createRequest = {}>(
+export default function useHttpCRUD<updateRequest = {}>(
   serviceName: HttpServiceType,
-  options?: IApiCrudConfig<{}, createRequest, {}, {}, {}, {}>,
+  options?: IApiCrudConfig<{}, {}, updateRequest, {}, {}, {}>,
   customEndPoint?: ICustomEndpoints
 ) {
   //Options
-  const { createConfig } = options ?? {};
+  const { updateConfig } = options ?? {};
+  const { handleError, handleSuccess } = useHandleResponse();
 
   const queryClient = useQueryClient();
 
   const { token } = useAppSelector((state) => state.auth);
-  const { handleError, handleSuccess } = useHandleResponse();
-
-  const { create } = new CRUDService<{}, createRequest, {}, {}, {}, {}>(
+  const { update } = new CRUDService<{}, {}, updateRequest, {}, {}, {}>(
     serviceName,
     customEndPoint,
     {
@@ -26,31 +25,30 @@ export default function useHttpPostApi<createRequest = {}>(
     }
   );
 
-  const createEntity = useMutation(create, {
-    ...createConfig,
+  const updateEntity = useMutation(update, {
+    ...updateConfig,
     onSuccess: (data, variables, context) => {
+      updateConfig?.onSuccess &&
+        updateConfig.onSuccess(data, variables, context);
       // Invalidate and refetch
       queryClient.invalidateQueries([serviceName]);
-      createConfig?.onSuccess &&
-        createConfig.onSuccess(data, variables, context);
-      !createConfig?.withOutFeedBackMessage &&
+      !updateConfig?.withOutFeedBackMessage &&
         handleSuccess(data, data.message);
     },
-    onError: createConfig?.onError
+    onError: updateConfig?.onError
       ? (error, variables, context) => {
-          createConfig?.onError &&
-            createConfig.onError(error, variables, context);
-          createEntity.reset();
+          updateConfig?.onError && // need narrowing
+            updateConfig?.onError(error, variables, context);
           console.error("error from hook", error);
           handleError(error);
         }
       : undefined,
-    onMutate: (data) => {
+    onMutate: (data: any) => {
       return data;
     },
   });
 
   return {
-    createEntity,
+    updateEntity,
   };
 }

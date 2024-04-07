@@ -1,7 +1,7 @@
-import HttpMethod from "../constants/httpMethods";
-import RequestConfig from "../interfaces/RequestConfig.interface";
+import HttpMethod from "../client/constants/httpMethods";
+import RequestConfig from "../client/interfaces/RequestConfig.interface";
 import ApiProvider from "./apiProvider";
-import IApiService from "../interfaces/ApiService.interface";
+import IApiService from "../client/interfaces/ApiService.interface";
 
 
 export default class ApiService implements IApiService {

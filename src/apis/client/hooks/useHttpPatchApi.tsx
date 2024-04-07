@@ -1,23 +1,24 @@
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { useMutation, useQueryClient } from "react-query";
-import { HttpServiceType } from "../constants";
+import { HttpServiceType } from "../../constants";
 import { IApiCrudConfig, ICustomEndpoints } from "../interfaces";
-import { CRUDService } from "../utils";
+import { CRUDService } from "../../utils";
 import { useHandleResponse } from "@/hooks";
 
-export default function useHttpCRUD<updateRequest = {}>(
+export default function useHttpCRUD<patchRequest = {}>(
   serviceName: HttpServiceType,
-  options?: IApiCrudConfig<{}, {}, updateRequest, {}, {}, {}>,
+  options?: IApiCrudConfig<{}, {}, {}, patchRequest, {}, {}>,
   customEndPoint?: ICustomEndpoints
 ) {
   //Options
-  const { updateConfig } = options ?? {};
-  const { handleError, handleSuccess } = useHandleResponse();
+  const { patchConfig } = options ?? {};
 
   const queryClient = useQueryClient();
 
   const { token } = useAppSelector((state) => state.auth);
-  const { update } = new CRUDService<{}, {}, updateRequest, {}, {}, {}>(
+  const { handleError, handleSuccess } = useHandleResponse();
+
+  const { patchItem } = new CRUDService<{}, {}, {}, patchRequest, {}, {}>(
     serviceName,
     customEndPoint,
     {
@@ -25,20 +26,19 @@ export default function useHttpCRUD<updateRequest = {}>(
     }
   );
 
-  const updateEntity = useMutation(update, {
-    ...updateConfig,
+  const patchEntity = useMutation(patchItem, {
+    ...patchConfig,
     onSuccess: (data, variables, context) => {
-      updateConfig?.onSuccess &&
-        updateConfig.onSuccess(data, variables, context);
+      patchConfig?.onSuccess && patchConfig.onSuccess(data, variables, context);
       // Invalidate and refetch
       queryClient.invalidateQueries([serviceName]);
-      !updateConfig?.withOutFeedBackMessage &&
-        handleSuccess(data, data.message);
+      !patchConfig?.withOutFeedBackMessage && handleSuccess(data, data.message);
     },
-    onError: updateConfig?.onError
+    onError: patchConfig?.onError
       ? (error, variables, context) => {
-          updateConfig?.onError && // need narrowing
-            updateConfig?.onError(error, variables, context);
+          patchConfig?.onError &&
+            patchConfig.onError(error, variables, context);
+
           console.error("error from hook", error);
           handleError(error);
         }
@@ -49,6 +49,6 @@ export default function useHttpCRUD<updateRequest = {}>(
   });
 
   return {
-    updateEntity,
+    patchEntity,
   };
 }

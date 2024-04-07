@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { useQuery, useQueryClient } from "react-query";
-import { HttpServiceType } from "../constants";
+import { HttpServiceType } from "../../constants";
 import { generateEntityCollectionQueryKey } from "../helpers/queryKeysFactory";
 import {
   ErrorResponse,
@@ -8,7 +8,7 @@ import {
   IBaseApiResponse,
   ICustomEndpoints,
 } from "../interfaces";
-import { CRUDService } from "../utils";
+import { CRUDService } from "../../utils";
 import { useHandleResponse } from "@/hooks";
 
 export default function useHttpGetAllApi<
