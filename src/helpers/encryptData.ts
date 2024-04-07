@@ -1,11 +1,11 @@
-import {AES} from "crypto-js";
+import { AES } from "crypto-js";
 
 /**
  * @description a helper function that used to encryptData the given json  by the aes algorthim and a secret code from the env
  * @param {any} data - usually json
  * @returns {false | string} - the false if the proceess not seccessed
  */
-const encryptData = (data: any) => {
+export const encryptData = (data: any) => {
   let cipherText: any;
   try {
     cipherText = AES.encrypt(
@@ -17,4 +17,3 @@ const encryptData = (data: any) => {
     return false;
   }
 };
-export default encryptData;

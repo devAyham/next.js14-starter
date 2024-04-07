@@ -1,11 +1,11 @@
-import {AES, enc} from "crypto-js";
+import { AES, enc } from "crypto-js";
 
 /**
  * @description a helper function that used to decrypt the given string if it is a valid one by the aes algorthim and a secret code from the env
  * @param {string} cipherText
  * @returns {false | JSON} - the false if the cipherText is not valid
  */
-const decryptData = (cipherText: string) => {
+export const decryptData = (cipherText: string) => {
   // let bytes: any;/
   try {
     let bytes = AES.decrypt(
@@ -18,5 +18,3 @@ const decryptData = (cipherText: string) => {
     return false;
   }
 };
-
-export default decryptData;
