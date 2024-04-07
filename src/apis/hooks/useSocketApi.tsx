@@ -1,10 +1,10 @@
 import { SocketNameSpaces } from "@/apis";
 import { useEffect, useRef } from "react";
 import io, { ManagerOptions, Socket, SocketOptions } from "socket.io-client";
-import { DefaultEventsMap, EventsMap } from "../interfaces";
+import { IDefaultEventsMap, EventsMap } from "../interfaces";
 
 export const useSocket = <
-  ServerToClientEvents extends EventsMap = DefaultEventsMap,
+  ServerToClientEvents extends EventsMap = IDefaultEventsMap,
   ClientToServerEvents extends EventsMap = ServerToClientEvents
 >({
   nameSpace,
@@ -39,6 +39,10 @@ export const useSocket = <
     socket.io.on("reconnect_failed", () => {
       console.info("Reconnection failure.");
       onReconnectFailed?.();
+    });
+
+    socket.io.on("error", (err) => {
+      console.info("Socket Error :" + err.message);
     });
 
     return () => {
