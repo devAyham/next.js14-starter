@@ -2,8 +2,8 @@ import { useAppSelector } from "@/hooks/useReduxHooks";
 import { useMutation, useQueryClient } from "react-query";
 import { HttpServiceType } from "../../constants";
 import { IApiCrudConfig, ICustomEndpoints } from "../interfaces";
-import { CRUDService } from "../../utils";
 import { useHandleResponse } from "@/hooks";
+import { CRUDService } from "../utils";
 
 export default function useHttpPostApi<createRequest = {}>(
   serviceName: HttpServiceType,

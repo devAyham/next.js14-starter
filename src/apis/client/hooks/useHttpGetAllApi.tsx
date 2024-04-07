@@ -8,13 +8,10 @@ import {
   IBaseApiResponse,
   ICustomEndpoints,
 } from "../interfaces";
-import { CRUDService } from "../../utils";
 import { useHandleResponse } from "@/hooks";
+import { CRUDService } from "../utils";
 
-export default function useHttpGetAllApi<
-  requestParams = {},
-  getAllResponse = {}
->(
+export function useHttpGetAllApi<requestParams = {}, getAllResponse = {}>(
   serviceName: HttpServiceType,
   options?: IApiCrudConfig<requestParams, {}, {}, {}, {}, getAllResponse>,
   customEndPoint?: ICustomEndpoints

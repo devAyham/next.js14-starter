@@ -12,10 +12,10 @@ import {
   ICustomEndpoints,
 } from "../interfaces";
 import { useAppSelector } from "@/hooks/useReduxHooks";
-import { CRUDService } from "../../utils";
 import { useHandleResponse } from "@/hooks";
+import { CRUDService } from "../utils";
 
-export default function useHttpCRUD<
+export function useHttpCRUDApi<
   requestParams = {},
   createRequest = {},
   updateRequest = {},

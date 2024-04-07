@@ -2,10 +2,10 @@ import { useAppSelector } from "@/hooks/useReduxHooks";
 import { useMutation, useQueryClient } from "react-query";
 import { HttpServiceType } from "../../constants";
 import { IApiCrudConfig, ICustomEndpoints } from "../interfaces";
-import { CRUDService } from "../../utils";
 import { useHandleResponse } from "@/hooks";
+import { CRUDService } from "../utils";
 
-export default function useHttpCRUD<patchRequest = {}>(
+export default function useHttpPatchApi<patchRequest = {}>(
   serviceName: HttpServiceType,
   options?: IApiCrudConfig<{}, {}, {}, patchRequest, {}, {}>,
   customEndPoint?: ICustomEndpoints
