@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { HttpServiceType } from "../constants";
 import { IApiCrudConfig, ICustomEndpoints } from "../interfaces";
 import { CRUDService } from "../utils";
+import { useHandleResponse } from "@/hooks";
 
 export default function useHttpCRUD<patchRequest = {}>(
   serviceName: HttpServiceType,
@@ -15,6 +16,8 @@ export default function useHttpCRUD<patchRequest = {}>(
   const queryClient = useQueryClient();
 
   const { token } = useAppSelector((state) => state.auth);
+  const { handleError, handleSuccess } = useHandleResponse();
+
   const { patchItem } = new CRUDService<{}, {}, {}, patchRequest, {}, {}>(
     serviceName,
     customEndPoint,
@@ -29,13 +32,15 @@ export default function useHttpCRUD<patchRequest = {}>(
       patchConfig?.onSuccess && patchConfig.onSuccess(data, variables, context);
       // Invalidate and refetch
       queryClient.invalidateQueries([serviceName]);
-      // !patchConfig?.withOutFeedBackMessage && handleSuccess(data, data.message);
+      !patchConfig?.withOutFeedBackMessage && handleSuccess(data, data.message);
     },
     onError: patchConfig?.onError
       ? (error, variables, context) => {
-          // !patchConfig?.withOutFeedBackMessage && handleError(error);
           patchConfig?.onError &&
             patchConfig.onError(error, variables, context);
+
+          console.error("error from hook", error);
+          handleError(error);
         }
       : undefined,
     onMutate: (data: any) => {

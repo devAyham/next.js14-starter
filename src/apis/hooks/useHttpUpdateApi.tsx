@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { HttpServiceType } from "../constants";
 import { IApiCrudConfig, ICustomEndpoints } from "../interfaces";
 import { CRUDService } from "../utils";
+import { useHandleResponse } from "@/hooks";
 
 export default function useHttpCRUD<updateRequest = {}>(
   serviceName: HttpServiceType,
@@ -11,6 +12,7 @@ export default function useHttpCRUD<updateRequest = {}>(
 ) {
   //Options
   const { updateConfig } = options ?? {};
+  const { handleError, handleSuccess } = useHandleResponse();
 
   const queryClient = useQueryClient();
 
@@ -30,13 +32,15 @@ export default function useHttpCRUD<updateRequest = {}>(
         updateConfig.onSuccess(data, variables, context);
       // Invalidate and refetch
       queryClient.invalidateQueries([serviceName]);
-      // !updateConfig?.withOutFeedBackMessage &&
-      //   handleSuccess(data, data.message);
+      !updateConfig?.withOutFeedBackMessage &&
+        handleSuccess(data, data.message);
     },
     onError: updateConfig?.onError
       ? (error, variables, context) => {
           updateConfig?.onError && // need narrowing
             updateConfig?.onError(error, variables, context);
+          console.error("error from hook", error);
+          handleError(error);
         }
       : undefined,
     onMutate: (data: any) => {

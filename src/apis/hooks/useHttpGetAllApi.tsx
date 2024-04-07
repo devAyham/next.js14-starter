@@ -9,6 +9,7 @@ import {
   ICustomEndpoints,
 } from "../interfaces";
 import { CRUDService } from "../utils";
+import { useHandleResponse } from "@/hooks";
 
 export default function useHttpGetAllApi<
   requestParams = {},
@@ -22,6 +23,8 @@ export default function useHttpGetAllApi<
   const { getAllConfig } = options ?? {};
 
   const { token } = useAppSelector((state) => state.auth);
+  const { handleError } = useHandleResponse();
+
   const { getAll } = new CRUDService<
     requestParams,
     {},
@@ -63,6 +66,8 @@ export default function useHttpGetAllApi<
       onError: getAllConfig?.onError
         ? (error: ErrorResponse) => {
             getAllConfig?.onError && getAllConfig.onError(error);
+            console.error("error from hook", error);
+            handleError(error);
           }
         : undefined,
     }

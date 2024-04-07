@@ -13,6 +13,7 @@ import {
 } from "../interfaces";
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { CRUDService } from "../utils";
+import { useHandleResponse } from "@/hooks";
 
 export default function useHttpCRUD<
   requestParams = {},
@@ -37,6 +38,7 @@ export default function useHttpCRUD<
   const { deleteConfig } = options ?? {};
 
   const queryClient = useQueryClient();
+  const { handleError, handleSuccess } = useHandleResponse();
 
   const { token } = useAppSelector((state) => state.auth);
   const { deleteItem } = new CRUDService<{}, {}, {}, {}, {}, {}>(
@@ -54,14 +56,15 @@ export default function useHttpCRUD<
         deleteConfig.onSuccess(data, variables, context);
       // Invalidate and refetch
       queryClient.invalidateQueries([serviceName]);
-      // !deleteConfig?.withOutFeedBackMessage &&
-      //   handleSuccess(data, data.message);
+      !deleteConfig?.withOutFeedBackMessage &&
+        handleSuccess(data, data.message);
     },
     onError: deleteConfig?.onError
       ? (error, variables, context) => {
           deleteConfig?.onError &&
             deleteConfig.onError(error, variables, context);
-          // !deleteConfig?.withOutFeedBackMessage && handleError(error);
+          console.error("error from hook", error);
+          handleError(error);
         }
       : undefined,
     onMutate: ({ id }) => {

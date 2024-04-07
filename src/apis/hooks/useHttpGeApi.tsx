@@ -9,6 +9,7 @@ import {
   ICustomEndpoints,
 } from "../interfaces";
 import { CRUDService } from "../utils";
+import { useHandleResponse } from "@/hooks";
 
 export default function useHttpCRUD<requestParams = {}, getResponse = {}>(
   serviceName: HttpServiceType,
@@ -19,6 +20,8 @@ export default function useHttpCRUD<requestParams = {}, getResponse = {}>(
   const { getDetailsConfig } = options ?? {};
 
   const { token } = useAppSelector((state) => state.auth);
+  const { handleError } = useHandleResponse();
+
   const { getDetails } = new CRUDService<
     requestParams,
     {},
@@ -66,6 +69,8 @@ export default function useHttpCRUD<requestParams = {}, getResponse = {}>(
         ? (error: ErrorResponse) => {
             getDetailsConfig?.onError &&
               getDetailsConfig.onError(error, {}, {});
+            console.error("error from hook", error);
+            handleError(error);
           }
         : undefined,
     }

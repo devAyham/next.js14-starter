@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { HttpServiceType } from "../constants";
 import { IApiCrudConfig, ICustomEndpoints } from "../interfaces";
 import { CRUDService } from "../utils";
+import { useHandleResponse } from "@/hooks";
 
 export default function useHttpPostApi<createRequest = {}>(
   serviceName: HttpServiceType,
@@ -15,6 +16,8 @@ export default function useHttpPostApi<createRequest = {}>(
   const queryClient = useQueryClient();
 
   const { token } = useAppSelector((state) => state.auth);
+  const { handleError, handleSuccess } = useHandleResponse();
+
   const { create } = new CRUDService<{}, createRequest, {}, {}, {}, {}>(
     serviceName,
     customEndPoint,
@@ -30,15 +33,16 @@ export default function useHttpPostApi<createRequest = {}>(
       queryClient.invalidateQueries([serviceName]);
       createConfig?.onSuccess &&
         createConfig.onSuccess(data, variables, context);
-      // !createConfig?.withOutFeedBackMessage &&
-      //   handleSuccess(data, data.message);
+      !createConfig?.withOutFeedBackMessage &&
+        handleSuccess(data, data.message);
     },
     onError: createConfig?.onError
       ? (error, variables, context) => {
           createConfig?.onError &&
             createConfig.onError(error, variables, context);
-          // !createConfig?.withOutFeedBackMessage && handleError(error);
           createEntity.reset();
+          console.error("error from hook", error);
+          handleError(error);
         }
       : undefined,
     onMutate: (data) => {

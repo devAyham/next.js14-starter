@@ -13,6 +13,7 @@ import {
 } from "../interfaces";
 import { useAppSelector } from "@/hooks/useReduxHooks";
 import { CRUDService } from "../utils";
+import { useHandleResponse } from "@/hooks";
 
 export default function useHttpCRUD<
   requestParams = {},
@@ -46,6 +47,7 @@ export default function useHttpCRUD<
   const queryClient = useQueryClient();
 
   const { token } = useAppSelector((state) => state.auth);
+  const { handleError, handleSuccess } = useHandleResponse();
   const { create, deleteItem, getAll, getDetails, update, patchItem } =
     new CRUDService<
       requestParams,
@@ -89,6 +91,7 @@ export default function useHttpCRUD<
       onError: getAllConfig?.onError
         ? (error: ErrorResponse) => {
             getAllConfig?.onError && getAllConfig.onError(error);
+            handleError(error);
           }
         : undefined,
     }
@@ -131,6 +134,8 @@ export default function useHttpCRUD<
         ? (error: ErrorResponse) => {
             getDetailsConfig?.onError &&
               getDetailsConfig.onError(error, {}, {});
+            console.error("error from hook", error);
+            handleError(error);
           }
         : undefined,
     }
@@ -144,15 +149,16 @@ export default function useHttpCRUD<
       queryClient.invalidateQueries([serviceName]);
       createConfig?.onSuccess &&
         createConfig.onSuccess(data, variables, context);
-      // !createConfig?.withOutFeedBackMessage &&
-      //   handleSuccess(data, data.message);
+      !createConfig?.withOutFeedBackMessage &&
+        handleSuccess(data, data.message);
     },
     onError: createConfig?.onError
       ? (error, variables, context) => {
           createConfig?.onError &&
             createConfig.onError(error, variables, context);
-          // !createConfig?.withOutFeedBackMessage && handleError(error);
           createEntity.reset();
+          console.error("error from hook", error);
+          handleError(error);
         }
       : undefined,
     onMutate: (data) => {
@@ -168,13 +174,15 @@ export default function useHttpCRUD<
         updateConfig.onSuccess(data, variables, context);
       // Invalidate and refetch
       queryClient.invalidateQueries([serviceName]);
-      // !updateConfig?.withOutFeedBackMessage &&
-      //   handleSuccess(data, data.message);
+      !updateConfig?.withOutFeedBackMessage &&
+        handleSuccess(data, data.message);
     },
     onError: updateConfig?.onError
       ? (error, variables, context) => {
           updateConfig?.onError &&
             updateConfig.onError(error, variables, context);
+          console.error("error from hook", error);
+          handleError(error);
         }
       : undefined,
     onMutate: (data: any) => {
@@ -189,13 +197,15 @@ export default function useHttpCRUD<
       patchConfig?.onSuccess && patchConfig.onSuccess(data, variables, context);
       // Invalidate and refetch
       queryClient.invalidateQueries([serviceName]);
-      // !patchConfig?.withOutFeedBackMessage && handleSuccess(data, data.message);
+      !patchConfig?.withOutFeedBackMessage && handleSuccess(data, data.message);
     },
     onError: patchConfig?.onError
       ? (error, variables, context) => {
           // !patchConfig?.withOutFeedBackMessage && handleError(error);
           patchConfig?.onError &&
             patchConfig.onError(error, variables, context);
+          console.error("error from hook", error);
+          handleError(error);
         }
       : undefined,
     onMutate: (data: any) => {
@@ -211,14 +221,15 @@ export default function useHttpCRUD<
         deleteConfig.onSuccess(data, variables, context);
       // Invalidate and refetch
       queryClient.invalidateQueries([serviceName]);
-      // !deleteConfig?.withOutFeedBackMessage &&
-      //   handleSuccess(data, data.message);
+      !deleteConfig?.withOutFeedBackMessage &&
+        handleSuccess(data, data.message);
     },
     onError: deleteConfig?.onError
       ? (error, variables, context) => {
           deleteConfig?.onError &&
             deleteConfig.onError(error, variables, context);
-          // !deleteConfig?.withOutFeedBackMessage && handleError(error);
+          console.error("error from hook", error);
+          handleError(error);
         }
       : undefined,
     onMutate: ({ id }) => {
