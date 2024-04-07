@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/global/globals.css";
+import { ReduxProvider } from "@/providers/ReduxProvider";
+import {
+  AntDesignConfigProvider,
+  NetworkProvider,
+  ReactQueryConfigProvider,
+  VersionSupportProvider,
+} from "@/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +28,17 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>York Brititsh Academy</title>
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <VersionSupportProvider>
+          <ReduxProvider>
+            <ReactQueryConfigProvider>
+              <AntDesignConfigProvider>
+                <NetworkProvider>{children}</NetworkProvider>
+              </AntDesignConfigProvider>
+            </ReactQueryConfigProvider>
+          </ReduxProvider>
+        </VersionSupportProvider>
+      </body>
     </html>
   );
 }
