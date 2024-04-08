@@ -1,31 +1,33 @@
-import * as React from "react";
-import { UNSAFE_NavigationContext } from "react-router-dom";
-import type { History, Blocker, Transition } from "history";
-/**
- * @description a hook used to prevent the user from navigater to another page if an action is currently running
- * and works with the help of useCallbackPrompt & useConfirmLeaving hooks
- * @param {Blocker} blocker 
- * @param {boolean} when 
- */
-export function useNavigateBlocker(blocker: Blocker, when = true): void {
-  const navigator = React.useContext(UNSAFE_NavigationContext)
-    .navigator as History;
 
-  React.useEffect(() => {
+
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import type { History, Blocker, Transition } from "history";
+
+export function useNavigateBlocker(blocker: Blocker, when = true): void {
+  const router = useRouter();
+
+  useEffect(() => {
     if (!when) return;
 
-    const unblock = navigator.block((tx: Transition) => {
-      const autoUnblockingTx = {
-        ...tx,
+    const handleBeforePopState = (state: any): boolean => {
+      const autoUnblockingTx: Transition = {
+        ...state,
         retry() {
-          unblock();
-          tx.retry();
+          router.beforePopState(() => true);
+          state.retry();
         },
       };
 
       blocker(autoUnblockingTx);
-    });
 
-    return unblock;
-  }, [navigator, blocker, when]);
+      return false; // Return an empty string to allow navigation
+    };
+
+    router.beforePopState(handleBeforePopState);
+
+    return () => {
+      router.beforePopState(() => true); // Reset the beforePopState callback
+    };
+  }, [router, blocker, when]);
 }

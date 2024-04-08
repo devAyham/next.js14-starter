@@ -1,4 +1,4 @@
-import Logo from "assets/svg/generalSvgs/logo.svg";
+import Logo from "@/assets/images/logo.png";
 /**
  * @description This provider is to check the version browser is supproted or not
  * for our app, if the browser supported the will continue working else the app will
@@ -15,7 +15,10 @@ import Logo from "assets/svg/generalSvgs/logo.svg";
 const VersionSupportProvider = ({ children }: any) => {
   const isBrowserSupported = () => {
     // take the user agent from the navigator
-    const ua = navigator.userAgent.toLowerCase();
+    const ua =
+      typeof navigator === "object"
+        ? navigator.userAgent.toLowerCase()
+        : [""].toString();
     // check if the browser woking on internet explorer
     const isIE = ua.indexOf("msie") !== -1 || ua.indexOf("trident") !== -1;
     // check if the browser woking on opera
@@ -98,7 +101,7 @@ const VersionSupportProvider = ({ children }: any) => {
           >
             <div>
               <img
-                src={Logo}
+                src={Logo.src}
                 alt=""
                 style={{ height: "20vh", margin: "auto", width: "100%" }}
               />

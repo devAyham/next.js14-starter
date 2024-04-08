@@ -1,3 +1,4 @@
+"use client"
 export * from "./useCallbackPrompt";
 export * from "./useConfirmLeaveing";
 export * from "./useGetBreakPoint";

@@ -1,5 +1,8 @@
+"use client";
+
 import { decryptData, encryptData, isRetryOnStatus } from "@/helpers";
 import { useHandleResponse, useAppDispatch } from "@/hooks";
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { createWebStoragePersistor } from "react-query/createWebStoragePersistor-experimental";
 import { persistQueryClient } from "react-query/persistQueryClient-experimental";
@@ -13,6 +16,7 @@ import { persistQueryClient } from "react-query/persistQueryClient-experimental"
  * @param {ReactNode} children - wrapped components
  */
 const CustomQueryClientProvider = ({ children }: any) => {
+  const isClient = typeof window === "object";
   const dispatch = useAppDispatch();
   const { handleError } = useHandleResponse();
   // useErrorHandler();
@@ -45,17 +49,20 @@ const CustomQueryClientProvider = ({ children }: any) => {
       },
     },
   });
+  useEffect(() => {
+    if (isClient) {
+      const sessionStoragePersistor = createWebStoragePersistor({
+        storage: window.sessionStorage,
+        deserialize: decryptData,
+        serialize: encryptData,
+      });
 
-  const sessionStoragePersistor = createWebStoragePersistor({
-    storage: window.sessionStorage,
-    deserialize: decryptData,
-    serialize: encryptData,
-  });
-
-  persistQueryClient({
-    queryClient,
-    persistor: sessionStoragePersistor,
-  });
+      persistQueryClient({
+        queryClient,
+        persistor: sessionStoragePersistor,
+      });
+    }
+  }, [isClient]);
 
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>

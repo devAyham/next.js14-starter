@@ -1,5 +1,5 @@
-import decryptData from "../helpers/decryptData";
-import encryptData from "../helpers/encryptData";
+import { decryptData, encryptData } from "@/helpers";
+
 /**
  * @description get unique id from local storage if exist else generate new id and return it
  * @returns {string}

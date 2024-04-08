@@ -10,6 +10,8 @@ import { WifiOutlined } from "@ant-design/icons";
  * @param {ReactNode} children - wrapped components
  */
 const NetworkProvider = ({ children }: any) => {
+  const isClient = typeof window === "object";
+
   const [isOffline, setIsOffline] = useState(false);
 
   const key = "network_status";
@@ -20,15 +22,24 @@ const NetworkProvider = ({ children }: any) => {
     } else {
       setIsOffline(true);
     }
-  }, [navigator.onLine]);
+  }, [typeof navigator === "object" ? navigator?.onLine : undefined]);
+
+  useEffect(() => {
+    if (isClient) {
+      window.addEventListener("online", () => {
+        setIsOffline(false);
+      });
+      window.addEventListener("offline", () => {
+        setIsOffline(true);
+      });
+    }
+    return () => {
+      window.removeEventListener("online", () => {});
+      window.removeEventListener("offline", () => {});
+    };
+  }, [isClient]);
 
   // second way to handle offline
-  window.addEventListener("online", () => {
-    setIsOffline(false);
-  });
-  window.addEventListener("offline", () => {
-    setIsOffline(true);
-  });
 
   useEffect(() => {
     if (isOffline) {

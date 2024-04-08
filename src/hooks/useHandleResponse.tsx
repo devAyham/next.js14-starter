@@ -1,6 +1,5 @@
+import { HttpStatus } from "@/apis/constants";
 import { notification } from "antd";
-import { useAppDispatch } from "./useReduxHooks";
-import { HttpStatus } from "@/apis";
 
 type ErrorData = {
   [key: string]: string[];
