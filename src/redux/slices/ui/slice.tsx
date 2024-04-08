@@ -22,7 +22,7 @@ const initialStateForUi: InitialStateUiInterface = {
  */
 
 const uiSlice = createSlice({
-  name: "UI",
+  name: "ui",
   initialState: initialStateForUi,
   reducers: {
     Reset: () => ({ ...initialStateForUi }),
