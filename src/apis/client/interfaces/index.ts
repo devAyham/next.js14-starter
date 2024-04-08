@@ -11,3 +11,4 @@ export * from "./ErrorResponse.interface";
 export * from "./PaginationConfig.interface";
 export * from "./CustomEndPoints.interface";
 export * from "./CustomEndPoints.interface";
+export * from "./SocketApi.Props";

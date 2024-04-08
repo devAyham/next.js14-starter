@@ -1,7 +1,6 @@
-import { SocketNameSpaces } from "@/apis";
-import { useEffect, useRef } from "react";
-import io, { ManagerOptions, Socket, SocketOptions } from "socket.io-client";
-import { IDefaultEventsMap, EventsMap } from "../interfaces";
+import { useEffect } from "react";
+import io, { Socket } from "socket.io-client";
+import { EventsMap, IDefaultEventsMap, ISocketApiProps } from "../interfaces";
 
 export const useSocket = <
   ServerToClientEvents extends EventsMap = IDefaultEventsMap,
@@ -14,20 +13,13 @@ export const useSocket = <
   onReconnectError,
   onReconnectFailed,
   onError,
-}: {
-  nameSpace?: SocketNameSpaces;
-  options?: Partial<ManagerOptions & SocketOptions> | undefined;
-  onReconnect?: (attempt: number) => void;
-  onReconnectAttemp?: (attempt: number) => void;
-  onReconnectError?: (err: Error) => void;
-  onReconnectFailed?: () => void;
-  onError?: (err: Error) => void;
-}): Socket<ServerToClientEvents, ClientToServerEvents> => {
+}: ISocketApiProps) => {
   const uri = `${process.env.NEST_BASE_API_URL}${nameSpace}`;
 
-  const { current: socket } = useRef<
-    Socket<ServerToClientEvents, ClientToServerEvents>
-  >(io(uri, options));
+  const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
+    uri,
+    options
+  );
 
   useEffect(() => {
     //Fired upon a successful reconnection.
