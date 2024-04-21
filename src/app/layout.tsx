@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "@/styles/global/globals.css";
+import "@/styles/global/globals.scss";
 import { ReduxProvider } from "@/providers/ReduxProvider";
 import {
   AntDesignConfigProvider,

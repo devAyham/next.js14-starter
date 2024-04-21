@@ -4,3 +4,4 @@ export * from "./changeStringToDate";
 export * from "./decryptData";
 export * from "./encryptData";
 export * from "./falttenArrayMethod";
+export * from "./isMobileAgentDevice";
